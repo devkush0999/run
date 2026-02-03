@@ -12,6 +12,8 @@ export default function ValentinesPage() {
   const [noPos, setNoPos] = useState({ x: 120, y: 300 });
   const [yesScale, setYesScale] = useState(1);
   const [yesClicked, setYesClicked] = useState(false);
+  const [hasMoved, setHasMoved] = useState(false);
+
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -34,13 +36,17 @@ export default function ValentinesPage() {
 
   // 🏃 NO Button Move
   const moveNo = () => {
-    vibratePhone();
-    setNoPos({
-      x: Math.random() * (window.innerWidth - 120),
-      y: Math.random() * (window.innerHeight - 60),
-    });
-    setYesScale((p) => p + 0.12);
-  };
+  vibratePhone();
+  setHasMoved(true);
+
+  setNoPos({
+    x: Math.random() * (window.innerWidth - 120),
+    y: Math.random() * (window.innerHeight - 80),
+  });
+
+  setYesScale((p) => p + 0.12);
+};
+
 
   // 🎆 Fireworks
   const fireWorks = () => {
@@ -97,14 +103,19 @@ export default function ValentinesPage() {
             </button>
 
             <button
-              className="noBtn"
-              style={{ left: noPos.x, top: noPos.y }}
-              onMouseEnter={moveNo}
-              onTouchStart={moveNo}
-              onClick={moveNo}
-            >
-              NO 😈
-            </button>
+  className={`noBtn ${hasMoved ? "floating" : ""}`}
+  style={
+    hasMoved
+      ? { left: noPos.x, top: noPos.y }
+      : {}
+  }
+  onMouseEnter={moveNo}
+  onTouchStart={moveNo}
+  onClick={moveNo}
+>
+  NO 😈
+</button>
+
           </div>
         </div>
       ) : (
@@ -114,7 +125,7 @@ export default function ValentinesPage() {
 
           <p className="loveMsg">
             You make my world brighter, my heart happier, and my life more beautiful ❤️
-Stay with me forever 💍
+
           </p>
 
           {/* ❤️ HEART RAIN */}
