@@ -91,7 +91,7 @@ export default function ValentinesPage() {
       {!yesClicked ? (
         <div className="card">
           <Heart className="heart" fill="red" />
-          <h1> {name} : Will you be my Valentine,? 💖</h1>
+          <h1> {name} , will you be my Valentine's? 💖</h1>
 
           <div className="buttons">
             <button
