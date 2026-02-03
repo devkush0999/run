@@ -85,7 +85,7 @@ export default function ValentinesPage() {
       {!yesClicked ? (
         <div className="card">
           <Heart className="heart" fill="red" />
-          <h1>Will you be my Valentine, {name}? 💖</h1>
+          <h1> {name} : Will you be my Valentine,? 💖</h1>
 
           <div className="buttons">
             <button
@@ -113,8 +113,8 @@ export default function ValentinesPage() {
           <h1>Yaaaay Garima!!! 💕</h1>
 
           <p className="loveMsg">
-            You make my world brighter, my heart happier and my life more
-            beautiful ❤️ Will you stay with me forever? 💍
+            You make my world brighter, my heart happier, and my life more beautiful ❤️
+Stay with me forever 💍
           </p>
 
           {/* ❤️ HEART RAIN */}
