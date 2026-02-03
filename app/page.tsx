@@ -1,65 +1,140 @@
-import Image from "next/image";
 
-export default function Home() {
+
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Heart, Sparkles } from "lucide-react";
+import confetti from "canvas-confetti";
+
+export default function ValentinesPage() {
+  const name = "Garima";
+
+  const [noPos, setNoPos] = useState({ x: 120, y: 300 });
+  const [yesScale, setYesScale] = useState(1);
+  const [yesClicked, setYesClicked] = useState(false);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // 🎵 Play Music after first tap
+  useEffect(() => {
+    const play = () => {
+      audioRef.current?.play().catch(() => {});
+      window.removeEventListener("click", play);
+    };
+    window.addEventListener("click", play);
+    return () => window.removeEventListener("click", play);
+  }, []);
+
+  // 📳 Vibrate
+  const vibratePhone = () => {
+    if ("vibrate" in navigator) {
+      navigator.vibrate([80, 40, 80]);
+    }
+  };
+
+  // 🏃 NO Button Move
+  const moveNo = () => {
+    vibratePhone();
+    setNoPos({
+      x: Math.random() * (window.innerWidth - 120),
+      y: Math.random() * (window.innerHeight - 60),
+    });
+    setYesScale((p) => p + 0.12);
+  };
+
+  // 🎆 Fireworks
+  const fireWorks = () => {
+    const end = Date.now() + 2000;
+    const frame = () => {
+      confetti({ particleCount: 6, angle: 60, spread: 70, origin: { x: 0 } });
+      confetti({ particleCount: 6, angle: 120, spread: 70, origin: { x: 1 } });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+    frame();
+  };
+
+  // 🎉 YES
+  const handleYes = () => {
+    setYesClicked(true);
+    confetti({ particleCount: 200, spread: 120 });
+    fireWorks();
+  };
+
+  // ✨ Spark Trail
+  useEffect(() => {
+    const spark = (e: any) => {
+      const s = document.createElement("div");
+      s.className = "spark";
+      s.style.left = e.clientX + "px";
+      s.style.top = e.clientY + "px";
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 800);
+    };
+    window.addEventListener("mousemove", spark);
+    window.addEventListener("touchmove", (e) => spark(e.touches[0]));
+    return () => window.removeEventListener("mousemove", spark);
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="wrapper">
+      {/* 🎵 MUSIC */}
+      {/* <audio ref={audioRef} loop>
+        <source src="/love.mp3" />
+      </audio> */}
+
+      {!yesClicked ? (
+        <div className="card">
+          <Heart className="heart" fill="red" />
+          <h1>Will you be my Valentine, {name}? 💖</h1>
+
+          <div className="buttons">
+            <button
+              className="yesBtn"
+              style={{ transform: `scale(${yesScale})` }}
+              onClick={handleYes}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              YES 💖
+            </button>
+
+            <button
+              className="noBtn"
+              style={{ left: noPos.x, top: noPos.y }}
+              onMouseEnter={moveNo}
+              onTouchStart={moveNo}
+              onClick={moveNo}
             >
-              Learning
-            </a>{" "}
-            center.
+              NO 😈
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="success">
+          <Sparkles size={80} color="gold" />
+          <h1>Yaaaay Garima!!! 💕</h1>
+
+          <p className="loveMsg">
+            You make my world brighter, my heart happier and my life more
+            beautiful ❤️ Will you stay with me forever? 💍
           </p>
+
+          {/* ❤️ HEART RAIN */}
+          <div className="rain">
+            {Array.from({ length: 120 }).map((_, i) => (
+              <span key={i}>❤️</span>
+            ))}
+          </div>
+
+          {/* 🖼️ FIXED MEMORY IMAGE */}
+          <video
+  className="memoryVideo"
+  src="https://res.cloudinary.com/dyq4v1f6y/video/upload/v1770096535/WhatsApp_Video_2026-02-03_at_10.35.51_njhqrd.mp4"
+  autoPlay
+  loop
+  // muted
+  playsInline
+/>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
     </div>
   );
 }
